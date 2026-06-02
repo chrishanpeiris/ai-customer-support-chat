@@ -1,13 +1,13 @@
-# AI Support Chat
+# AI Customer Support Chat
 
 A full-stack AI-powered customer support chat application demonstrating:
 
 - **LLM streaming + tool use** via Ollama (local, zero cost)
-- **BFF pattern** — Next.js frontend + separate Node.js/Express backend-for-frontend
-- **Auth** — NextAuth.js credentials provider with JWT forwarded to BFF
-- **PostgreSQL** — conversations, messages, products, orders
-- **Docker + docker-compose** — entire stack in one command
-- **GitHub Actions CI** — typecheck → lint → build Docker images → push to GHCR
+- **BFF pattern** : Next.js frontend + separate Node.js/Express backend-for-frontend
+- **Auth** : NextAuth.js credentials provider with JWT forwarded to BFF
+- **PostgreSQL** : conversations, messages, products, orders
+- **Docker + docker-compose** : entire stack in one command
+- **GitHub Actions CI** : typecheck → lint → build Docker images → push to GHCR
 
 ## Architecture
 
@@ -59,6 +59,7 @@ npm run dev        # starts BFF on :3001 and web on :3000
 ```
 
 Run Ollama separately:
+
 ```bash
 ollama serve
 ollama pull llama3.2
@@ -90,19 +91,20 @@ apps/
 ## CI/CD
 
 Every push runs:
-1. **Typecheck** — `tsc --noEmit` across both apps
-2. **Lint** — `next lint` (web) + tsc (bff)
-3. **Build + push** — Docker images built with layer caching, pushed to GHCR on `main`
+
+1. **Typecheck** : `tsc --noEmit` across both apps
+2. **Lint** : `next lint` (web) + tsc (bff)
+3. **Build + push** : Docker images built with layer caching, pushed to GHCR on `main`
 
 See [.github/workflows/ci.yml](.github/workflows/ci.yml).
 
 ## Key design decisions
 
-| Decision | Why |
-|---|---|
-| BFF as a separate Express process, not Next.js API routes | Demonstrates the BFF pattern; scales independently; clean auth boundary |
-| Ollama instead of cloud API | Zero cost; same API as OpenAI; shows ability to run self-hosted models |
-| SSE over WebSocket | Simpler for unidirectional streaming; no library needed on either side |
-| Tool call loop (max 5 rounds) | Prevents runaway calls while allowing multi-step reasoning |
-| JWT signed with shared NEXTAUTH_SECRET | BFF validates tokens without a round-trip to Next.js; standard practice |
-| Raw `pg` in BFF | Explicit SQL shows relational data skills; Prisma used in Project 2 for migrations showcase |
+| Decision                                                  | Why                                                                                         |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| BFF as a separate Express process, not Next.js API routes | Demonstrates the BFF pattern; scales independently; clean auth boundary                     |
+| Ollama instead of cloud API                               | Zero cost; same API as OpenAI; shows ability to run self-hosted models                      |
+| SSE over WebSocket                                        | Simpler for unidirectional streaming; no library needed on either side                      |
+| Tool call loop (max 5 rounds)                             | Prevents runaway calls while allowing multi-step reasoning                                  |
+| JWT signed with shared NEXTAUTH_SECRET                    | BFF validates tokens without a round-trip to Next.js; standard practice                     |
+| Raw `pg` in BFF                                           | Explicit SQL shows relational data skills; Prisma used in Project 2 for migrations showcase |
